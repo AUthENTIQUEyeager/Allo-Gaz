@@ -9,13 +9,14 @@ const ROLE_HOME = {
   admin: "/admin"
 };
 
-function checkEnv() {
+function envSnapshot() {
   const url = process.env.NEXT_PUBLIC_SUPABASE_URL;
   const key = process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY;
-  if (!url || !key) {
-    return `URL=${url || "MANQUANTE"} | ANON_KEY=${key ? `presente (${key.length} caracteres)` : "MANQUANTE"}`;
-  }
-  return null;
+  return {
+    ok: Boolean(url && key),
+    url: url || "MANQUANTE",
+    keyInfo: key ? `presente (${key.length} caracteres)` : "MANQUANTE"
+  };
 }
 
 function describeError(error) {
@@ -29,8 +30,10 @@ function describeError(error) {
 }
 
 export async function signUp(formData) {
-  const envIssue = checkEnv();
-  if (envIssue) return { error: `[Config manquante] ${envIssue}` };
+  const env = envSnapshot();
+  if (!env.ok) {
+    return { error: `[Config manquante] URL=${env.url} | ANON_KEY=${env.keyInfo}` };
+  }
 
   try {
     const supabase = createClient();
@@ -51,7 +54,7 @@ export async function signUp(formData) {
     });
 
     if (error) {
-      return { error: `[Supabase] ${describeError(error)}` };
+      return { error: `[URL:${env.url}] [Supabase] ${describeError(error)}` };
     }
     if (!data?.session) {
       return {
@@ -62,11 +65,16 @@ export async function signUp(formData) {
 
     return { success: true, redirectTo: ROLE_HOME[role] };
   } catch (err) {
-    return { error: `[Exception] ${describeError(err)} | raw=${String(err)}` };
+    return { error: `[URL:${env.url}] [Exception] ${describeError(err)} | raw=${String(err)}` };
   }
 }
 
 export async function signIn(formData) {
+  const env = envSnapshot();
+  if (!env.ok) {
+    return { error: `[Config manquante] URL=${env.url} | ANON_KEY=${env.keyInfo}` };
+  }
+
   try {
     const supabase = createClient();
 
@@ -75,7 +83,7 @@ export async function signIn(formData) {
 
     const { data, error } = await supabase.auth.signInWithPassword({ email, password });
     if (error) {
-      return { error: `[Supabase] ${error.message || JSON.stringify(error)}` };
+      return { error: `[URL:${env.url}] [Supabase] ${describeError(error)}` };
     }
 
     const { data: profile, error: profileError } = await supabase
@@ -85,12 +93,12 @@ export async function signIn(formData) {
       .single();
 
     if (profileError) {
-      return { error: `[Profile] ${profileError.message || JSON.stringify(profileError)}` };
+      return { error: `[URL:${env.url}] [Profile] ${describeError(profileError)}` };
     }
 
     return { success: true, redirectTo: ROLE_HOME[profile?.role] || "/client" };
   } catch (err) {
-    return { error: `[Exception] ${err?.message || String(err)}` };
+    return { error: `[URL:${env.url}] [Exception] ${describeError(err)} | raw=${String(err)}` };
   }
 }
 
