@@ -9,7 +9,29 @@ const ROLE_HOME = {
   admin: "/admin"
 };
 
+function checkEnv() {
+  const url = process.env.NEXT_PUBLIC_SUPABASE_URL;
+  const key = process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY;
+  if (!url || !key) {
+    return `URL=${url || "MANQUANTE"} | ANON_KEY=${key ? `presente (${key.length} caracteres)` : "MANQUANTE"}`;
+  }
+  return null;
+}
+
+function describeError(error) {
+  return JSON.stringify({
+    message: error?.message,
+    name: error?.name,
+    status: error?.status,
+    code: error?.code,
+    cause: error?.cause?.message || error?.cause
+  });
+}
+
 export async function signUp(formData) {
+  const envIssue = checkEnv();
+  if (envIssue) return { error: `[Config manquante] ${envIssue}` };
+
   try {
     const supabase = createClient();
 
@@ -29,7 +51,7 @@ export async function signUp(formData) {
     });
 
     if (error) {
-      return { error: `[Supabase] ${error.message || JSON.stringify(error)}` };
+      return { error: `[Supabase] ${describeError(error)}` };
     }
     if (!data?.session) {
       return {
@@ -40,7 +62,7 @@ export async function signUp(formData) {
 
     return { success: true, redirectTo: ROLE_HOME[role] };
   } catch (err) {
-    return { error: `[Exception] ${err?.message || String(err)}` };
+    return { error: `[Exception] ${describeError(err)} | raw=${String(err)}` };
   }
 }
 
