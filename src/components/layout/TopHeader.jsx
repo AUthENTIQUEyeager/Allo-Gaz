@@ -1,11 +1,10 @@
-import { Flame } from "lucide-react";
+import { Flame, LogOut } from "lucide-react";
 import Link from "next/link";
 import { signOut } from "@/lib/actions/auth";
-import { LogOut } from "lucide-react";
 
 export default function TopHeader({ title, subtitle, homeHref }) {
   return (
-    <header className="sticky top-0 z-30 bg-gradient-to-r from-flame-500 to-ember-500 px-5 pb-6 pt-5 text-white">
+    <header className="sticky top-0 z-30 bg-gradient-to-r from-flame-500 to-ember-500 px-5 pb-6 pt-5 text-white md:hidden">
       <div className="mx-auto flex max-w-lg items-center justify-between">
         <Link href={homeHref} className="flex items-center gap-2">
           <Flame className="h-6 w-6" fill="white" strokeWidth={0} />

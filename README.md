@@ -30,13 +30,14 @@ commandes avec suivi de statut, validation des vendeurs par l'admin, avis client
    → Cela crée toutes les tables (profils, vendeurs, stock, commandes, avis), les
    déclencheurs automatiques et les règles de sécurité (chacun ne voit que ses propres
    données).
-6. Va dans **Authentication → Providers → Email** et vérifie que l'authentification par
+6. Va dans **SQL Editor** et exécute aussi **`supabase/migrations/0002_onboarding_and_stats.sql`** (après le premier script) — il ajoute le suivi d'onboarding et la position domicile du client.
+7. Va dans **Authentication → Providers → Email** et vérifie que l'authentification par
    email/mot de passe est activée (c'est le cas par défaut).
-7. **Pour tester facilement en local**, va dans **Authentication → Settings** et désactive
+8. **Pour tester facilement en local**, va dans **Authentication → Settings** et désactive
    temporairement **"Confirm email"** (comme ça, un compte créé est utilisable
    immédiatement, sans cliquer sur un lien reçu par email). Tu pourras le réactiver avant
    la mise en production.
-8. Va dans **Project Settings → API**. Tu vas y trouver trois informations à copier :
+9. Va dans **Project Settings → API**. Tu vas y trouver trois informations à copier :
    - **Project URL** → ce sera `NEXT_PUBLIC_SUPABASE_URL`
    - **anon public key** → ce sera `NEXT_PUBLIC_SUPABASE_ANON_KEY`
    - **service_role key** → ce sera `SUPABASE_SERVICE_ROLE_KEY` (garde-la secrète, ne la
@@ -148,7 +149,10 @@ allogaz/
 
 ### Ce qui est déjà fonctionnel
 
-- Inscription / connexion avec 2 rôles au choix (client, vendeur) + admin via SQL
+- Inscription minimale (email + mot de passe) suivie d'un **onboarding animé et progressif**
+  façon appli mobile récente : un écran plein écran par info, swipe ou bouton pour avancer,
+  aucune adresse à taper — le client partage sa position une fois chez lui et l'app déduit
+  son quartier automatiquement (géocodage inverse via OpenStreetMap)
 - Sécurité par ligne (RLS) : un vendeur ne voit jamais les données d'un autre vendeur
 - Recherche des vendeurs actifs par ville, affichage du stock disponible en temps réel
 - Commande complète (choix bouteille, quantité, livraison/retrait, paiement)
@@ -156,7 +160,13 @@ allogaz/
 - Gestion de stock vendeur (ajout, mise à jour, suppression)
 - Validation / suspension des vendeurs par l'admin
 - Avis clients avec note moyenne mise à jour automatiquement
-- Design responsive mobile-first avec identité visuelle "flamme"
+- **Statistiques** : côté client (commandes totales, argent dépensé, vendeur préféré),
+  côté vendeur (revenus, graphique d'activité des 7 derniers jours, taux de complétion)
+- **Design responsive complet** : navigation par onglets en bas sur mobile, vraie barre
+  latérale (sidebar) et grilles multi-colonnes sur desktop — pas juste une version mobile
+  étirée
+- Animations fluides (Framer Motion) sur l'onboarding et les listes de vendeurs
+- Design "flamme" distinctif (orange/ambre, typographie Space Grotesk + Inter)
 
 ### Ce qu'il reste à brancher pour une vraie mise en production
 

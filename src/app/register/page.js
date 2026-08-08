@@ -41,7 +41,7 @@ export default function RegisterPage() {
         <div className="mb-8 flex flex-col items-center text-white">
           <Flame className="h-10 w-10" fill="white" strokeWidth={0} />
           <h1 className="mt-2 font-display text-2xl font-medium">AlloGaz</h1>
-          <p className="text-sm text-white/80">Cree ton compte</p>
+          <p className="text-sm text-white/80">Cree ton compte en 10 secondes</p>
         </div>
 
         <div className="rounded-2xl bg-white p-6 shadow-card">
@@ -58,15 +58,15 @@ export default function RegisterPage() {
                 <option value="client">Client — je veux commander du gaz</option>
                 <option value="vendor">Vendeur — je veux vendre du gaz</option>
               </Select>
-              <Input label="Nom complet" name="full_name" required placeholder="Ton nom" />
-              <Input label="Telephone" name="phone" required placeholder="+226 XX XX XX XX" />
-              <Input label="Ville" name="city" required placeholder="Bobo-Dioulasso" />
               <Input label="Email" name="email" type="email" required placeholder="toi@exemple.com" />
               <Input label="Mot de passe" name="password" type="password" required minLength={6} placeholder="6 caracteres minimum" />
               {error && <p className="text-sm text-red-600">{error}</p>}
               <Button type="submit" className="w-full" disabled={loading}>
                 {loading ? "Creation..." : "Creer mon compte"}
               </Button>
+              <p className="text-center text-xs text-ink-800/40">
+                Le reste (nom, ville, position...) se fait juste apres, etape par etape.
+              </p>
             </form>
           )}
           {!message && (

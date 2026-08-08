@@ -2,9 +2,11 @@ import Link from "next/link";
 import { AlertTriangle, Package, Star, Wallet } from "lucide-react";
 import { getMyVendorProfile } from "@/lib/actions/vendors";
 import { listVendorOrders } from "@/lib/actions/orders";
+import { getVendorStats } from "@/lib/actions/stats";
 import Card from "@/components/ui/Card";
 import Badge from "@/components/ui/Badge";
 import EmptyState from "@/components/ui/EmptyState";
+import RevenueChart from "./RevenueChart";
 import { formatFCFA, ORDER_STATUS_LABELS, ORDER_STATUS_COLORS } from "@/lib/utils";
 
 export default async function VendorDashboard() {
@@ -28,10 +30,8 @@ export default async function VendorDashboard() {
     );
   }
 
-  const orders = await listVendorOrders();
+  const [orders, stats] = await Promise.all([listVendorOrders(), getVendorStats()]);
   const pending = orders.filter((o) => o.status === "pending");
-  const completed = orders.filter((o) => o.status === "completed");
-  const revenue = completed.reduce((sum, o) => sum + Number(o.total_price), 0);
   const lowStock = (vendor.gas_stock || []).filter((s) => s.full_bottles <= 3);
 
   return (
@@ -49,7 +49,7 @@ export default async function VendorDashboard() {
         </Card>
       )}
 
-      <div className="grid grid-cols-2 gap-3">
+      <div className="grid grid-cols-2 gap-3 md:grid-cols-4">
         <Card>
           <Package className="h-4 w-4 text-flame-500" />
           <p className="mt-2 font-display text-xl font-medium text-ink-800">{pending.length}</p>
@@ -57,7 +57,9 @@ export default async function VendorDashboard() {
         </Card>
         <Card>
           <Wallet className="h-4 w-4 text-flame-500" />
-          <p className="mt-2 font-display text-xl font-medium text-ink-800">{formatFCFA(revenue)}</p>
+          <p className="mt-2 font-display text-xl font-medium text-ink-800">
+            {formatFCFA(stats?.totalRevenue || 0)}
+          </p>
           <p className="text-xs text-ink-800/50">Revenus (livrees)</p>
         </Card>
         <Card>
@@ -74,6 +76,13 @@ export default async function VendorDashboard() {
         </Card>
       </div>
 
+      {stats && stats.totalOrders > 0 && (
+        <Card>
+          <p className="mb-3 text-sm font-medium text-ink-800">Activite des 7 derniers jours</p>
+          <RevenueChart data={stats.last7Days} />
+        </Card>
+      )}
+
       <div>
         <h2 className="mb-3 font-display text-base font-medium text-ink-800">
           Commandes a traiter
@@ -81,7 +90,7 @@ export default async function VendorDashboard() {
         {pending.length === 0 ? (
           <EmptyState icon={Package} title="Rien a traiter pour l'instant" />
         ) : (
-          <div className="space-y-3">
+          <div className="grid grid-cols-1 gap-3 md:grid-cols-2">
             {pending.map((order) => (
               <Card key={order.id}>
                 <div className="flex items-start justify-between">

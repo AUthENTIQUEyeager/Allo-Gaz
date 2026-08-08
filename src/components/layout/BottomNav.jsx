@@ -8,7 +8,7 @@ export default function BottomNav({ items }) {
   const pathname = usePathname();
 
   return (
-    <nav className="fixed bottom-0 left-0 right-0 z-40 border-t border-black/5 bg-white/95 backdrop-blur">
+    <nav className="fixed bottom-0 left-0 right-0 z-40 border-t border-black/5 bg-white/95 backdrop-blur md:hidden">
       <div className="mx-auto flex max-w-lg items-center justify-around px-2 py-2">
         {items.map(({ href, label, icon: Icon }) => {
           const active = pathname === href;

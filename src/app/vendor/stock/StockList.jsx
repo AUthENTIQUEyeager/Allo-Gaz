@@ -14,7 +14,7 @@ export default function StockList({ stock }) {
   }
 
   return (
-    <div className="space-y-2">
+    <div className="grid grid-cols-1 gap-2 md:grid-cols-2">
       {stock.map((item) => (
         <Card key={item.id} className="flex items-center justify-between py-3">
           <div>

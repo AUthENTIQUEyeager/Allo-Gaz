@@ -14,24 +14,26 @@ export default async function AdminOrdersPage() {
       {orders.length === 0 ? (
         <EmptyState icon={ClipboardList} title="Aucune commande sur la plateforme" />
       ) : (
-        orders.map((order) => (
-          <Card key={order.id}>
-            <div className="flex items-start justify-between">
-              <div>
-                <p className="text-sm font-medium text-ink-800">
-                  {order.profiles?.full_name} → {order.vendors?.business_name}
-                </p>
-                <p className="text-xs text-ink-800/50">
-                  {order.brand} {order.capacity_kg}kg x{order.quantity}
-                </p>
+        <div className="grid grid-cols-1 gap-3 md:grid-cols-2 lg:grid-cols-3">
+          {orders.map((order) => (
+            <Card key={order.id}>
+              <div className="flex items-start justify-between">
+                <div>
+                  <p className="text-sm font-medium text-ink-800">
+                    {order.profiles?.full_name} → {order.vendors?.business_name}
+                  </p>
+                  <p className="text-xs text-ink-800/50">
+                    {order.brand} {order.capacity_kg}kg x{order.quantity}
+                  </p>
+                </div>
+                <Badge className={ORDER_STATUS_COLORS[order.status]}>
+                  {ORDER_STATUS_LABELS[order.status]}
+                </Badge>
               </div>
-              <Badge className={ORDER_STATUS_COLORS[order.status]}>
-                {ORDER_STATUS_LABELS[order.status]}
-              </Badge>
-            </div>
-            <p className="mt-2 text-sm font-medium text-ink-800">{formatFCFA(order.total_price)}</p>
-          </Card>
-        ))
+              <p className="mt-2 text-sm font-medium text-ink-800">{formatFCFA(order.total_price)}</p>
+            </Card>
+          ))}
+        </div>
       )}
     </div>
   );

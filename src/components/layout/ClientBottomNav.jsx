@@ -1,16 +1,8 @@
 "use client";
 
-import { Home, Package, User, Flame } from "lucide-react";
 import BottomNav from "./BottomNav";
+import { CLIENT_NAV } from "@/lib/navConfig";
 
 export default function ClientBottomNav() {
-  return (
-    <BottomNav
-      items={[
-        { href: "/client", label: "Accueil", icon: Home },
-        { href: "/client/commandes", label: "Commandes", icon: Package },
-        { href: "/client/profil", label: "Profil", icon: User }
-      ]}
-    />
-  );
+  return <BottomNav items={CLIENT_NAV} />;
 }

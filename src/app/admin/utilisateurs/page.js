@@ -23,15 +23,17 @@ export default async function AdminUsersPage() {
       {!users || users.length === 0 ? (
         <EmptyState icon={Users} title="Aucun utilisateur" />
       ) : (
-        users.map((u) => (
-          <Card key={u.id} className="flex items-center justify-between py-3">
-            <div>
-              <p className="text-sm font-medium text-ink-800">{u.full_name || "Sans nom"}</p>
-              <p className="text-xs text-ink-800/50">{u.phone} — {u.city}</p>
-            </div>
-            <Badge className={ROLE_COLOR[u.role]}>{u.role}</Badge>
-          </Card>
-        ))
+        <div className="grid grid-cols-1 gap-3 md:grid-cols-2 lg:grid-cols-3">
+          {users.map((u) => (
+            <Card key={u.id} className="flex items-center justify-between py-3">
+              <div>
+                <p className="text-sm font-medium text-ink-800">{u.full_name || "Sans nom"}</p>
+                <p className="text-xs text-ink-800/50">{u.phone} — {u.city}</p>
+              </div>
+              <Badge className={ROLE_COLOR[u.role]}>{u.role}</Badge>
+            </Card>
+          ))}
+        </div>
       )}
     </div>
   );

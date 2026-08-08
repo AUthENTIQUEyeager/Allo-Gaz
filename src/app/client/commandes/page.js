@@ -20,27 +20,29 @@ export default async function ClientOrdersPage() {
           description="Tes commandes de gaz apparaitront ici."
         />
       ) : (
-        orders.map((order) => (
-          <Card key={order.id}>
-            <div className="flex items-start justify-between">
-              <div>
-                <p className="font-display text-sm font-medium text-ink-800">
-                  {order.vendors?.business_name}
-                </p>
-                <p className="mt-0.5 text-xs text-ink-800/50">
-                  {order.brand} {order.capacity_kg}kg x{order.quantity}
-                </p>
+        <div className="grid grid-cols-1 gap-3 md:grid-cols-2">
+          {orders.map((order) => (
+            <Card key={order.id}>
+              <div className="flex items-start justify-between">
+                <div>
+                  <p className="font-display text-sm font-medium text-ink-800">
+                    {order.vendors?.business_name}
+                  </p>
+                  <p className="mt-0.5 text-xs text-ink-800/50">
+                    {order.brand} {order.capacity_kg}kg x{order.quantity}
+                  </p>
+                </div>
+                <Badge className={ORDER_STATUS_COLORS[order.status]}>
+                  {ORDER_STATUS_LABELS[order.status]}
+                </Badge>
               </div>
-              <Badge className={ORDER_STATUS_COLORS[order.status]}>
-                {ORDER_STATUS_LABELS[order.status]}
-              </Badge>
-            </div>
-            <div className="mt-3 flex items-center justify-between border-t border-black/5 pt-3">
-              <span className="text-sm font-medium text-ink-800">{formatFCFA(order.total_price)}</span>
-              {order.status === "completed" && <ReviewButton order={order} />}
-            </div>
-          </Card>
-        ))
+              <div className="mt-3 flex items-center justify-between border-t border-black/5 pt-3">
+                <span className="text-sm font-medium text-ink-800">{formatFCFA(order.total_price)}</span>
+                {order.status === "completed" && <ReviewButton order={order} />}
+              </div>
+            </Card>
+          ))}
+        </div>
       )}
     </div>
   );

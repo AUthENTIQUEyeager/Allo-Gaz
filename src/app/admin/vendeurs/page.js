@@ -12,7 +12,11 @@ export default async function AdminVendorsPage() {
       {vendors.length === 0 ? (
         <EmptyState icon={Store} title="Aucun vendeur inscrit" />
       ) : (
-        vendors.map((v) => <VendorRow key={v.id} vendor={v} />)
+        <div className="grid grid-cols-1 gap-3 md:grid-cols-2">
+          {vendors.map((v) => (
+            <VendorRow key={v.id} vendor={v} />
+          ))}
+        </div>
       )}
     </div>
   );

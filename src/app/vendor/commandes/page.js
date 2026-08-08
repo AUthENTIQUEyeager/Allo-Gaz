@@ -12,7 +12,11 @@ export default async function VendorOrdersPage() {
       {orders.length === 0 ? (
         <EmptyState icon={Package} title="Aucune commande pour l'instant" />
       ) : (
-        orders.map((order) => <OrderCard key={order.id} order={order} />)
+        <div className="grid grid-cols-1 gap-3 md:grid-cols-2">
+          {orders.map((order) => (
+            <OrderCard key={order.id} order={order} />
+          ))}
+        </div>
       )}
     </div>
   );
