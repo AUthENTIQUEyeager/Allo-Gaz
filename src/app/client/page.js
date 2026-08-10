@@ -46,7 +46,7 @@ export default async function ClientHomePage() {
 
       <div>
         <h2 className="mb-3 font-display text-base font-medium text-ink-800">Vendeurs pres de toi</h2>
-        <VendorGrid vendors={vendors} />
+        <VendorGrid vendors={vendors} clientLat={profile?.latitude} clientLng={profile?.longitude} />
       </div>
     </div>
   );

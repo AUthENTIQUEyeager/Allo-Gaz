@@ -1,6 +1,7 @@
 import { notFound } from "next/navigation";
 import { getVendorById } from "@/lib/actions/vendors";
 import { getCurrentProfile } from "@/lib/supabase/server";
+import VendorLocationCard from "@/components/client/VendorLocationCard";
 import OrderForm from "./OrderForm";
 
 export default async function OrderPage({ params }) {
@@ -16,6 +17,9 @@ export default async function OrderPage({ params }) {
         <h2 className="font-display text-lg font-medium text-ink-800">{vendor.business_name}</h2>
         <p className="text-sm text-ink-800/50">{vendor.neighborhood || vendor.city}</p>
       </div>
+
+      <VendorLocationCard vendor={vendor} clientLat={profile?.latitude} clientLng={profile?.longitude} />
+
       <OrderForm vendor={vendor} availableStock={availableStock} profile={profile} />
     </div>
   );
