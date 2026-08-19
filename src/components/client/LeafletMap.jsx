@@ -4,6 +4,7 @@ import { useEffect } from "react";
 import { MapContainer, TileLayer, Marker, Popup, useMap } from "react-leaflet";
 import L from "leaflet";
 import "leaflet/dist/leaflet.css";
+import styles from "./LeafletMap.module.css";
 
 const vendorIcon = L.divIcon({
   className: "",
@@ -14,7 +15,7 @@ const vendorIcon = L.divIcon({
 
 const clientIcon = L.divIcon({
   className: "",
-  html: `<div style="background:#2563eb;width:14px;height:14px;border-radius:9999px;border:3px solid white;box-shadow:0 1px 6px rgba(0,0,0,.45)"></div>`,
+  html: `<div style="background:#06B6D4;width:14px;height:14px;border-radius:9999px;border:3px solid white;box-shadow:0 1px 6px rgba(0,0,0,.45)"></div>`,
   iconSize: [16, 16],
   iconAnchor: [8, 8]
 });
@@ -29,7 +30,7 @@ function FitBounds({ points }) {
   return null;
 }
 
-export default function LeafletMap({ vendorLat, vendorLng, vendorName, clientLat, clientLng }) {
+export default function LeafletMap({ vendorLat, vendorLng, vendorName, clientLat, clientLng, isHovered = false }) {
   const vendorPos = [vendorLat, vendorLng];
   const hasClient = Boolean(clientLat && clientLng);
   const points = hasClient ? [vendorPos, [clientLat, clientLng]] : [vendorPos];
@@ -45,11 +46,21 @@ export default function LeafletMap({ vendorLat, vendorLng, vendorName, clientLat
         attribution='&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a>'
         url="https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png"
       />
-      <Marker position={vendorPos} icon={vendorIcon}>
+      <Marker position={vendorPos} icon={L.divIcon({
+        className: isHovered ? styles['marker-animate'] : '',
+        html: `<div style="background:#F2540E;width:16px;height:16px;border-radius:9999px;border:3px solid white;box-shadow:0 1px 6px rgba(0,0,0,.45)"></div>`,
+        iconSize: [18, 18],
+        iconAnchor: [9, 9]
+      })}>
         <Popup>{vendorName}</Popup>
       </Marker>
       {hasClient && (
-        <Marker position={[clientLat, clientLng]} icon={clientIcon}>
+        <Marker position={[clientLat, clientLng]} icon={L.divIcon({
+          className: isHovered ? styles['marker-animate'] : '',
+          html: `<div style="background:#06B6D4;width:14px;height:14px;border-radius:9999px;border:3px solid white;box-shadow:0 1px 6px rgba(0,0,0,.45)"></div>`,
+          iconSize: [16, 16],
+          iconAnchor: [8, 8]
+        })}>
           <Popup>Toi</Popup>
         </Marker>
       )}

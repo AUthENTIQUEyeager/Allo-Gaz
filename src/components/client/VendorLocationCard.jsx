@@ -4,6 +4,7 @@ import dynamic from "next/dynamic";
 import { Navigation, MapPin } from "lucide-react";
 import Card from "@/components/ui/Card";
 import { distanceKm } from "@/lib/utils";
+import { useState } from "react";
 
 const LeafletMap = dynamic(() => import("./LeafletMap"), {
   ssr: false,
@@ -11,10 +12,12 @@ const LeafletMap = dynamic(() => import("./LeafletMap"), {
 });
 
 export default function VendorLocationCard({ vendor, clientLat, clientLng }) {
+  const [isHovered, setIsHovered] = useState(false);
+
   if (!vendor.latitude || !vendor.longitude) {
     return (
       <Card className="flex items-center gap-2 text-sm text-ink-800/50">
-        <MapPin className="h-4 w-4 shrink-0" />
+        <MapPin className="h-4 w-4 shrink-0 text-cyan-500" />
         Ce vendeur n'a pas encore partage sa position exacte.
       </Card>
     );
@@ -24,7 +27,7 @@ export default function VendorLocationCard({ vendor, clientLat, clientLng }) {
   const directionsUrl = `https://www.google.com/maps/dir/?api=1&destination=${vendor.latitude},${vendor.longitude}`;
 
   return (
-    <Card className="space-y-3">
+    <Card className="space-y-3" onMouseEnter={() => setIsHovered(true)} onMouseLeave={() => setIsHovered(false)}>
       <div className="flex items-center justify-between">
         <div>
           <p className="text-sm font-medium text-ink-800">Position du vendeur</p>
@@ -34,7 +37,7 @@ export default function VendorLocationCard({ vendor, clientLat, clientLng }) {
           href={directionsUrl}
           target="_blank"
           rel="noopener noreferrer"
-          className="flex items-center gap-1.5 rounded-full bg-flame-500 px-3.5 py-2 text-xs font-medium text-white hover:bg-flame-600"
+          className="flex items-center gap-1.5 rounded-full bg-cyan-500 px-3.5 py-2 text-xs font-medium text-white hover:bg-cyan-600"
         >
           <Navigation className="h-3.5 w-3.5" /> Itineraire
         </a>
@@ -47,6 +50,7 @@ export default function VendorLocationCard({ vendor, clientLat, clientLng }) {
           vendorName={vendor.business_name}
           clientLat={clientLat}
           clientLng={clientLng}
+          isHovered={isHovered}
         />
       </div>
     </Card>
