@@ -3,13 +3,16 @@
 import { createClient } from "@/lib/supabase/server";
 import { revalidatePath } from "next/cache";
 
+import { totalStock } from "@/lib/utils";
+
 export async function listNearbyVendors({ city } = {}) {
   const supabase = createClient();
   let query = supabase.from("vendors").select("*, gas_stock(*)").eq("status", "active");
   if (city) query = query.eq("city", city);
   const { data, error } = await query;
   if (error) return [];
-  return data;
+  // Les vendeurs avec le plus de bouteilles pleines disponibles apparaissent en premier.
+  return [...data].sort((a, b) => totalStock(b) - totalStock(a));
 }
 
 export async function getVendorById(vendorId) {
@@ -65,11 +68,29 @@ export async function upsertVendorProfile(formData) {
 // ---- Admin ----
 export async function listVendorsForAdmin() {
   const supabase = createClient();
-  const { data } = await supabase
+  const { data: vendors } = await supabase
     .from("vendors")
-    .select("*, profiles(full_name, phone)")
+    .select("*, profiles(full_name, phone), gas_stock(*)")
     .order("created_at", { ascending: false });
-  return data || [];
+  if (!vendors) return [];
+
+  // Commandes du jour, groupees par vendeur, pour affichage dans le panneau admin.
+  const startOfDay = new Date();
+  startOfDay.setHours(0, 0, 0, 0);
+  const { data: todayOrders } = await supabase
+    .from("orders")
+    .select("vendor_id")
+    .gte("created_at", startOfDay.toISOString());
+
+  const ordersTodayByVendor = {};
+  (todayOrders || []).forEach((o) => {
+    ordersTodayByVendor[o.vendor_id] = (ordersTodayByVendor[o.vendor_id] || 0) + 1;
+  });
+
+  return vendors.map((v) => ({
+    ...v,
+    ordersToday: ordersTodayByVendor[v.id] || 0
+  }));
 }
 
 export async function setVendorStatus(vendorId, status) {

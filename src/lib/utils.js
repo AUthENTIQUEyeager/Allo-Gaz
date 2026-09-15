@@ -23,6 +23,11 @@ export function formatFCFA(amount) {
   return new Intl.NumberFormat("fr-FR").format(amount) + " FCFA";
 }
 
+// Nombre total de bouteilles pleines disponibles chez un vendeur (tous produits confondus)
+export function totalStock(vendor) {
+  return (vendor.gas_stock || []).reduce((sum, s) => sum + (s.full_bottles || 0), 0);
+}
+
 export const ORDER_STATUS_LABELS = {
   pending: "En attente",
   accepted: "Acceptee",
