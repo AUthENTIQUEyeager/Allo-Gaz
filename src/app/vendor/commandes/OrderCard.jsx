@@ -1,6 +1,7 @@
 "use client";
 
 import { useState } from "react";
+import { Gift } from "lucide-react";
 import Card from "@/components/ui/Card";
 import Badge from "@/components/ui/Badge";
 import Button from "@/components/ui/Button";
@@ -41,6 +42,14 @@ export default function OrderCard({ order }) {
           <p className="mt-1 text-xs text-ink-800/50">
             {order.brand} {order.capacity_kg}kg x{order.quantity} — {order.delivery_method === "delivery" ? "Livraison" : "Retrait"}
           </p>
+          {order.loyaltyThreshold && order.clientOrderRank && (
+            <p className="mt-1.5 flex items-center gap-1 text-[11px] font-medium text-flame-600">
+              <Gift className="h-3 w-3" />
+              {order.clientOrderRank % order.loyaltyThreshold === 0
+                ? `Cadeau a offrir : ${order.loyaltyReward || "recompense fidelite"}`
+                : `Commande ${order.clientOrderRank % order.loyaltyThreshold} / ${order.loyaltyThreshold} de ce client`}
+            </p>
+          )}
         </div>
         <Badge className={ORDER_STATUS_COLORS[status]}>{ORDER_STATUS_LABELS[status]}</Badge>
       </div>

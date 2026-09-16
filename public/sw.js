@@ -61,3 +61,34 @@ self.addEventListener("fetch", (event) => {
     );
   }
 });
+
+// ---------- Notifications push (rappel de reapprovisionnement) ----------
+self.addEventListener("push", (event) => {
+  let payload = { title: "AlloGaz", body: "Tu as une nouvelle notification.", url: "/client" };
+  try {
+    if (event.data) payload = { ...payload, ...event.data.json() };
+  } catch (e) {
+    // payload non JSON, on garde les valeurs par defaut
+  }
+
+  event.waitUntil(
+    self.registration.showNotification(payload.title, {
+      body: payload.body,
+      icon: "/icons/icon-192.png",
+      badge: "/icons/icon-96.png",
+      data: { url: payload.url || "/client" }
+    })
+  );
+});
+
+self.addEventListener("notificationclick", (event) => {
+  event.notification.close();
+  const targetUrl = event.notification.data?.url || "/client";
+  event.waitUntil(
+    self.clients.matchAll({ type: "window", includeUncontrolled: true }).then((clientsArr) => {
+      const existing = clientsArr.find((c) => c.url.includes(targetUrl));
+      if (existing) return existing.focus();
+      return self.clients.openWindow(targetUrl);
+    })
+  );
+});

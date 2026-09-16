@@ -2,6 +2,7 @@ import { Inter, Space_Grotesk } from "next/font/google";
 import "./globals.css";
 import ServiceWorkerRegister from "@/components/pwa/ServiceWorkerRegister";
 import InstallPrompt from "@/components/pwa/InstallPrompt";
+import CookieConsent from "@/components/CookieConsent";
 
 const inter = Inter({ subsets: ["latin"], variable: "--font-inter" });
 const spaceGrotesk = Space_Grotesk({ subsets: ["latin"], variable: "--font-space-grotesk" });
@@ -39,6 +40,7 @@ export default function RootLayout({ children }) {
         {children}
         <ServiceWorkerRegister />
         <InstallPrompt />
+        <CookieConsent />
       </body>
     </html>
   );

@@ -2,6 +2,7 @@ import { notFound } from "next/navigation";
 import { getVendorById } from "@/lib/actions/vendors";
 import { getCurrentProfile } from "@/lib/supabase/server";
 import VendorLocationCard from "@/components/client/VendorLocationCard";
+import LoyaltyGauge from "@/components/client/LoyaltyGauge";
 import OrderForm from "./OrderForm";
 
 export default async function OrderPage({ params }) {
@@ -19,6 +20,7 @@ export default async function OrderPage({ params }) {
       </div>
 
       <VendorLocationCard vendor={vendor} clientLat={profile?.latitude} clientLng={profile?.longitude} />
+      <LoyaltyGauge vendorId={vendor.id} />
 
       <OrderForm vendor={vendor} availableStock={availableStock} profile={profile} />
     </div>

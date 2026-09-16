@@ -4,6 +4,7 @@ import { useMemo, useState } from "react";
 import { useRouter } from "next/navigation";
 import { motion, AnimatePresence } from "framer-motion";
 import { Flame, MapPin, ChevronLeft, Loader2, Check, Sparkles } from "lucide-react";
+import FlameMascot from "@/components/FlameMascot";
 import { completeClientOnboarding, completeVendorOnboarding } from "@/lib/actions/onboarding";
 
 const CITIES = ["Ouagadougou", "Bobo-Dioulasso", "Koudougou", "Banfora", "Ouahigouya"];
@@ -169,7 +170,7 @@ export default function OnboardingFlow({ role, initialName }) {
                   transition={{ duration: 1.8, repeat: Infinity, ease: "easeInOut" }}
                   className="mx-auto mb-6 flex h-24 w-24 items-center justify-center rounded-full bg-white/15"
                 >
-                  <Flame className="h-12 w-12" fill="white" strokeWidth={0} />
+                  <FlameMascot className="h-14 w-14" />
                 </motion.div>
                 <h1 className="font-display text-2xl font-medium leading-tight">{step.headline}</h1>
                 <p className="mt-3 text-sm text-white/80">{step.subline}</p>

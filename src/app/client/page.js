@@ -3,6 +3,7 @@ import { getCurrentProfile } from "@/lib/supabase/server";
 import { getClientStats } from "@/lib/actions/stats";
 import VendorGrid from "./VendorGrid";
 import Card from "@/components/ui/Card";
+import PushOptIn from "@/components/client/PushOptIn";
 import { formatFCFA } from "@/lib/utils";
 import { Package, Wallet, Heart } from "lucide-react";
 
@@ -21,6 +22,8 @@ export default async function ClientHomePage() {
           Choisis un vendeur actif a {profile?.city || "ta ville"} et commande en 2 minutes.
         </p>
       </Card>
+
+      <PushOptIn />
 
       {stats && stats.totalOrders > 0 && (
         <div className="grid grid-cols-3 gap-3">

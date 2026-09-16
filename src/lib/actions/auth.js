@@ -16,11 +16,16 @@ export async function signUp(formData) {
     const email = formData.get("email");
     const password = formData.get("password");
     const role = formData.get("role") === "vendor" ? "vendor" : "client";
+    const legalConsent = formData.get("legal_consent");
+
+    if (!legalConsent) {
+      return { error: "Tu dois accepter les mentions légales, la politique de confidentialité et la politique de cookies pour créer un compte." };
+    }
 
     const { data, error } = await supabase.auth.signUp({
       email,
       password,
-      options: { data: { role } }
+      options: { data: { role, legal_consent_at: new Date().toISOString() } }
     });
 
     if (error) return { error: error.message };

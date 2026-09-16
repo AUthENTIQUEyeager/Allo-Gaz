@@ -6,13 +6,13 @@ import { MapPin, Star, Navigation } from "lucide-react";
 import Card from "@/components/ui/Card";
 import Badge from "@/components/ui/Badge";
 import EmptyState from "@/components/ui/EmptyState";
+import VendorAvatar from "@/components/client/VendorAvatar";
 import { formatFCFA, distanceKm } from "@/lib/utils";
 
 export default function VendorGrid({ vendors, clientLat, clientLng }) {
   if (vendors.length === 0) {
     return (
       <EmptyState
-        icon={MapPin}
         title="Aucun vendeur actif pour l'instant"
         description="Reviens bientot, de nouveaux vendeurs rejoignent AlloGaz regulierement."
       />
@@ -33,11 +33,14 @@ export default function VendorGrid({ vendors, clientLat, clientLng }) {
             <Link href={`/client/commander/${vendor.id}`}>
               <Card className="h-full transition-transform hover:-translate-y-0.5 hover:shadow-lg active:scale-[0.98]">
                 <div className="flex items-start justify-between">
-                  <div>
-                    <p className="font-display text-sm font-medium text-ink-800">{vendor.business_name}</p>
-                    <p className="mt-0.5 flex items-center gap-1 text-xs text-ink-800/50">
-                      <MapPin className="h-3 w-3" /> {vendor.neighborhood || vendor.city}
-                    </p>
+                  <div className="flex items-start gap-2.5">
+                    <VendorAvatar logoUrl={vendor.logo_url} name={vendor.business_name} />
+                    <div>
+                      <p className="font-display text-sm font-medium text-ink-800">{vendor.business_name}</p>
+                      <p className="mt-0.5 flex items-center gap-1 text-xs text-ink-800/50">
+                        <MapPin className="h-3 w-3" /> {vendor.neighborhood || vendor.city}
+                      </p>
+                    </div>
                   </div>
                   <div className="flex flex-col items-end gap-1">
                     {vendor.rating > 0 && (

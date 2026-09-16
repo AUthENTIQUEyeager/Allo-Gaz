@@ -48,6 +48,7 @@ export default function VendorLocationCard({ vendor, clientLat, clientLng }) {
           vendorLat={vendor.latitude}
           vendorLng={vendor.longitude}
           vendorName={vendor.business_name}
+          vendorLogoUrl={vendor.logo_url}
           clientLat={clientLat}
           clientLng={clientLng}
           isHovered={isHovered}

@@ -9,6 +9,7 @@ import Badge from "@/components/ui/Badge";
 import Button from "@/components/ui/Button";
 import EmptyState from "@/components/ui/EmptyState";
 import Modal from "@/components/ui/Modal";
+import VendorAvatar from "@/components/client/VendorAvatar";
 import { formatFCFA } from "@/lib/utils";
 
 export default function PublicVendorGrid({ vendors }) {
@@ -17,7 +18,6 @@ export default function PublicVendorGrid({ vendors }) {
   if (vendors.length === 0) {
     return (
       <EmptyState
-        icon={MapPin}
         title="Aucun vendeur actif pour l'instant"
         description="Reviens bientot, de nouveaux vendeurs rejoignent AlloGaz regulierement."
       />
@@ -41,13 +41,16 @@ export default function PublicVendorGrid({ vendors }) {
             >
               <Card className="h-full transition-transform hover:-translate-y-0.5 hover:shadow-lg active:scale-[0.98]">
                 <div className="flex items-start justify-between">
-                  <div>
-                    <p className="font-display text-sm font-medium text-ink-800">
-                      {vendor.business_name}
-                    </p>
-                    <p className="mt-0.5 flex items-center gap-1 text-xs text-ink-800/50">
-                      <MapPin className="h-3 w-3" /> {vendor.neighborhood || vendor.city}
-                    </p>
+                  <div className="flex items-start gap-2.5">
+                    <VendorAvatar logoUrl={vendor.logo_url} name={vendor.business_name} />
+                    <div>
+                      <p className="font-display text-sm font-medium text-ink-800">
+                        {vendor.business_name}
+                      </p>
+                      <p className="mt-0.5 flex items-center gap-1 text-xs text-ink-800/50">
+                        <MapPin className="h-3 w-3" /> {vendor.neighborhood || vendor.city}
+                      </p>
+                    </div>
                   </div>
                   {vendor.rating > 0 && (
                     <Badge className="bg-ember-400/20 text-ember-500">

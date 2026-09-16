@@ -55,7 +55,9 @@ export async function upsertVendorProfile(formData) {
     opening_hours: formData.get("opening_hours"),
     delivery_fee: Number(formData.get("delivery_fee") || 0),
     latitude: formData.get("latitude") ? Number(formData.get("latitude")) : null,
-    longitude: formData.get("longitude") ? Number(formData.get("longitude")) : null
+    longitude: formData.get("longitude") ? Number(formData.get("longitude")) : null,
+    loyalty_threshold: formData.get("loyalty_threshold") ? Number(formData.get("loyalty_threshold")) : null,
+    loyalty_reward: formData.get("loyalty_reward") || null
   };
 
   const { error } = await supabase.from("vendors").upsert(payload, { onConflict: "profile_id" });
@@ -63,6 +65,39 @@ export async function upsertVendorProfile(formData) {
 
   revalidatePath("/vendor/profile");
   return { success: true };
+}
+
+// Upload de la photo/logo du commerce, utilisee ensuite comme marqueur sur la carte.
+export async function uploadVendorLogo(formData) {
+  const supabase = createClient();
+  const {
+    data: { user }
+  } = await supabase.auth.getUser();
+  if (!user) return { error: "Non connecte." };
+
+  const file = formData.get("logo");
+  if (!file || typeof file === "string" || file.size === 0) return { error: "Aucun fichier." };
+  if (file.size > 3 * 1024 * 1024) return { error: "Image trop lourde (max 3 Mo)." };
+
+  const ext = file.name.split(".").pop();
+  const path = `${user.id}/logo.${ext}`;
+
+  const { error: uploadError } = await supabase.storage
+    .from("vendor-logos")
+    .upload(path, file, { upsert: true, cacheControl: "3600" });
+  if (uploadError) return { error: uploadError.message };
+
+  const { data: publicUrlData } = supabase.storage.from("vendor-logos").getPublicUrl(path);
+  const logoUrl = `${publicUrlData.publicUrl}?t=${Date.now()}`;
+
+  const { error: updateError } = await supabase
+    .from("vendors")
+    .update({ logo_url: logoUrl })
+    .eq("profile_id", user.id);
+  if (updateError) return { error: updateError.message };
+
+  revalidatePath("/vendor/profile");
+  return { success: true, logoUrl };
 }
 
 // ---- Admin ----

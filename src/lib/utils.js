@@ -23,6 +23,21 @@ export function formatFCFA(amount) {
   return new Intl.NumberFormat("fr-FR").format(amount) + " FCFA";
 }
 
+// Duree moyenne (en jours) avant qu'une bouteille de cette capacite soit vide,
+// pour un usage familial standard. Valeurs fixes, non modifiables.
+const REFILL_DAYS_BY_CAPACITY = {
+  6: 20,
+  12: 40,
+  15: 50,
+  18: 55,
+  25: 70,
+  35: 90
+};
+
+export function estimateRefillDays(capacityKg) {
+  return REFILL_DAYS_BY_CAPACITY[capacityKg] || Math.round(capacityKg * 3.3);
+}
+
 // Nombre total de bouteilles pleines disponibles chez un vendeur (tous produits confondus)
 export function totalStock(vendor) {
   return (vendor.gas_stock || []).reduce((sum, s) => sum + (s.full_bottles || 0), 0);

@@ -60,6 +60,24 @@ export default function RegisterPage() {
               </Select>
               <Input label="Email" name="email" type="email" required placeholder="toi@exemple.com" />
               <Input label="Mot de passe" name="password" type="password" required minLength={6} placeholder="6 caracteres minimum" />
+              <label className="flex items-start gap-2 text-xs text-ink-800/60">
+                <input type="checkbox" name="legal_consent" required className="mt-0.5 h-4 w-4 rounded border-black/20 accent-flame-500" />
+                <span>
+                  J&apos;accepte les{" "}
+                  <Link href="/legal/mentions-legales" target="_blank" className="font-medium text-flame-500 hover:underline">
+                    mentions légales
+                  </Link>
+                  , la{" "}
+                  <Link href="/legal/confidentialite" target="_blank" className="font-medium text-flame-500 hover:underline">
+                    politique de confidentialité
+                  </Link>{" "}
+                  et la{" "}
+                  <Link href="/legal/cookies" target="_blank" className="font-medium text-flame-500 hover:underline">
+                    politique de cookies
+                  </Link>
+                  .
+                </span>
+              </label>
               {error && <p className="text-sm text-red-600">{error}</p>}
               <Button type="submit" className="w-full" disabled={loading}>
                 {loading ? "Creation..." : "Creer mon compte"}
